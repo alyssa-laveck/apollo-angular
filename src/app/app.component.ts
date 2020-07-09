@@ -13,11 +13,22 @@ export class AppComponent implements OnInit, OnDestroy {
   userTotal: number;
   users: any;
 
+  feed: any;
+
   private subscriptions: Subscription[];
 
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
+    this.getSwPeople();
+    this.getHackerNewsData();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub && sub.unsubscribe());
+  }
+
+  getSwPeople(): void {
     this.apollo.watchQuery<any>({
       query: gql`
         query peopleQuery($queryParams: String) {
@@ -30,7 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       `,
       variables: {
-        queryParams: '?search=r2'
+        queryParams: '?search=luke'
       }
     })
       .valueChanges
@@ -43,7 +54,26 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub && sub.unsubscribe());
+  getHackerNewsData(): void {
+    const query = gql`
+      query getFeed {
+        feed {
+          count
+          links {
+            id
+            description
+            url
+          }
+        }
+      }
+    `;
+
+    this.apollo.watchQuery<any>({ query })
+      .valueChanges
+      .subscribe({
+        next: ({ data }) => {
+          this.feed = data.feed;
+        }
+      });
   }
 }

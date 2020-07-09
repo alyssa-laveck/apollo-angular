@@ -1,7 +1,20 @@
-<div>Total: {{ userTotal }}</div>
-<table>
-  <tr *ngFor="let user of users">
-    <td>{{ user.name }}</td>
-    <td>{{ user.gender }}</td>
-  </tr>
-</table>
+<div *ngIf="userTotal > 0 && users">
+  <div>Total: {{ userTotal }}</div>
+  <table>
+    <tr *ngFor="let user of users">
+      <td>{{ user.name }}</td>
+      <td>{{ user.gender }}</td>
+    </tr>
+  </table>
+</div>
+
+<div id="hacker-news-feed" *ngIf="feed">
+  <div>Total: {{ feed.count }}</div>
+  <table>
+    <tr *ngFor="let link of feed.links">
+      <td>{{ link.id }}</td>
+      <td>{{ link.url }}</td>
+      <td>{{ link.description }}</td>
+    </tr>
+  </table>
+</div>
